@@ -1,0 +1,60 @@
+@startuml
+Class Constraint{
+	+boolean applyConstraint(Option[] option)
+}
+Class EntryConstraint{	
+	+checkEntry()
+}
+Class Adjustment{
+	+AdjustmentThreshold threshold
+	+AdjustmentMechanism mechanism
+}
+Class Strategy{
+	-Adjustment[] adjustmentSet
+	+applyAdjustmentMechanism()
+}
+Class IronCondorStrategy{	
+}
+
+Class Option
+Class Adjustment{
+	+checkAdjustment()
+}
+Class AdjustmentThreshold
+Class Closure{	
+	+checkClosure()
+}
+Class Spread{
+	-Option[] optionSet
+	+Option[] apply()
+}
+Class IronCondorSpread
+Class MarketReplay <<Singleton>>{
+	-Option[] getOptionList()
+	-checkStrategy(Option[])
+}
+Enum SpreadState{
+	APPLIED
+	NOT APPLIED
+	TO CLOSE
+	TO ADJUST
+}
+
+EntryConstraint --|> Constraint
+Strategy "1" *-- "1..many" EntryConstraint
+Strategy "1" *-- "1..many" Adjustment
+Strategy "1" *-- "1..many" Closure
+IronCondorStrategy --|> Strategy
+IronCondorSpread --|> IronCondorStrategy
+IronCondorSpread --|> Spread
+Closure --|> Constraint
+Constraint -- Option
+Adjustment "1" *-- "1..many" AdjustmentThreshold
+AdjustmentThreshold --|> Constraint
+Spread "1" --|> "1" Strategy
+Spread "1" o-- "1..many" Option
+MarketReplay "1" *-- "1..many" IronCondorSpread
+MarketReplay "1" *-- "1" IronCondorStrategy
+MarketReplay "1" -- "1..many" Option
+Spread "1" -- "1" SpreadState
+@enduml

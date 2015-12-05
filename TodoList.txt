@@ -1,0 +1,3 @@
+Todo
+1) Download tickers in multi-thread
+2) Check that beautiful soup returns data, if not retry download
